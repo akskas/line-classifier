@@ -76,3 +76,13 @@ npm run classify examples
 ```
 
 ![Response](assets/result.png)
+
+### Tests
+
+To run tests
+
+```bash
+npm run test
+```
+
+![TestResults](assets/test.png)

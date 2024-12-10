@@ -13,7 +13,10 @@ registerJavaClassifiers(classificationEngine);
 registerPythonClassifiers(classificationEngine);
 
 // Process a directory or file
-function processInput(inputPath: string): void {
+export function processInput(inputPath: string): Record<
+    string,
+    { counts: Record<string, number>; total: number }
+> {
     const stats = fs.statSync(inputPath);
 
     const results: Record<
@@ -25,7 +28,7 @@ function processInput(inputPath: string): void {
         const language = determineLanguage(inputPath);
         if (!language) {
             console.log(`Skipping unsupported file: ${inputPath}`);
-            return;
+            return results;
         }
         results[inputPath] = classifyFile(
             inputPath,
@@ -38,11 +41,10 @@ function processInput(inputPath: string): void {
         console.error(
             'Invalid input path. Please provide a file or directory.',
         );
-        return;
+        return results;
     }
 
-    // Print file-wise results
-    printFileResults(results);
+    return results;
 }
 
 // Process a directory recursively
@@ -73,9 +75,13 @@ function processDirectory(
 
 // Read input from CLI and run the program
 const inputPath = process.argv[2];
-if (!inputPath) {
-    console.error('Usage: node index.js <file-or-directory-path>');
-    process.exit(1);
-}
+if (require.main === module) {
+    if (!inputPath) {
+        console.error('Usage: node index.js <file-or-directory-path>');
+        process.exit(1);
+    }
 
-processInput(inputPath);
+    const results = processInput(inputPath);
+    // Print file-wise results
+    printFileResults(results);
+}
