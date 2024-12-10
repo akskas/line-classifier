@@ -3,6 +3,7 @@ import { BaseLineType } from '../../interfaces/line-type.interface';
 
 export class DynamicLineClassificationEngine {
     private classifiers: Map<string, LineClassifier[]> = new Map();
+    private state: { insideMultiLineComment: boolean } = { insideMultiLineComment: false };
 
     constructor() {}
 
@@ -29,7 +30,7 @@ export class DynamicLineClassificationEngine {
         const languageClassifiers = this.classifiers.get(language);
 
         for (const classifier of languageClassifiers || []) {
-            if (classifier.validator(line)) {
+            if (classifier.validator(line, this.state)) {
                 return {
                     id: classifier.lineTypeId,
                     name: classifier.name,

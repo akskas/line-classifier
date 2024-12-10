@@ -13,7 +13,7 @@ export function classifyFile(
 
     for (const line of lines) {
         const lineType = engine.classifyLine(language, line);
-        const typeName = `${language}_${lineType.id}`;
+        const typeName = lineType.id;
         lineCounts[typeName] = (lineCounts[typeName] || 0) + 1;
         totalLines++;
     }
